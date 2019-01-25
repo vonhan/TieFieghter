@@ -14,7 +14,7 @@ function init() {
 
     scene = new THREE.Scene();
 
-    initLights();
+    initSunLight();
 
     initTrackballControls();
 
@@ -33,12 +33,54 @@ function initCamera() {
     camera.position.y = 2;
 }
 
-function initLights() {
+function initArtificialLights() {
     var ambientLight = new THREE.AmbientLight(0xcccccc, 0.4);
     scene.add( ambientLight );
     var pointLight = new THREE.PointLight(0xffffff, 0.8);
     camera.add(pointLight);
     scene.add(camera);
+}
+
+function initSunLight() {
+  var hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.6 );
+
+  hemiLight.color.b = 0.6;
+  hemiLight.color.g = 0.75;
+  hemiLight.color.r = 0.5;
+
+  hemiLight.groundColor.b = 0.095;
+  hemiLight.groundColor.g = 0.5;
+  hemiLight.groundColor.r = 0.5;
+
+  hemiLight.position.x = 0;
+  hemiLight.position.y = 500;
+  hemiLight.position.z = 0;
+
+  scene.add( hemiLight );
+
+  var dirLight = new THREE.DirectionalLight( 0xffffff, 1 );
+  dirLight.position.x = -1;
+  dirLight.position.y = 0.75;
+  dirLight.position.z = 1;
+
+  dirLight.position.set( -1, 0.75, 1 );
+  dirLight.name = "dirlight";
+
+  scene.add( dirLight );
+
+  dirLight.castShadow = true;
+  dirLight.shadowMapWidth = dirLight.shadowMapHeight = 1024*2;
+
+  var d = 300;
+
+  dirLight.shadowCameraLeft = -d;
+  dirLight.shadowCameraRight = d;
+  dirLight.shadowCameraTop = d;
+  dirLight.shadowCameraBottom = -d;
+
+  dirLight.shadowCameraFar = 3500;
+  dirLight.shadowBias = -0.0001;
+  dirLight.shadowDarkness = 0.35;
 }
 
 function initTrackballControls() {
